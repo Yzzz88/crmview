@@ -794,3 +794,13 @@ tr:hover td { background: var(--sidebar); }
   margin-top: 18px;
 }
 .welcome-actions .btn { flex: 1; justify-content: center; min-width: 140px; }
+
+.sidebar { background: #112849; color: white; }
+.sidebar .nav-group-label, .sidebar-footer .muted { color: #bbcce4; }
+.sidebar .nav-item, .sidebar-header .btn { color: #edf4ff; }
+.sidebar .nav-item:hover, .sidebar-header .btn:hover { background: #213e65; }
+.sidebar .nav-item.active { background: #315cd5; color: white; border-color: transparent; }
+.sidebar .nav-badge { background: #29486d; color: white; }
+.sidebar .nav-item.active .nav-badge { background: #1b409a; color: white; }
+.sidebar .nav-group { margin-bottom: 8px; }
+.sidebar .nav-item { padding-block: 5px; }

@@ -392,6 +392,25 @@
   }
 
   function renderGenericMobile(route) {
+    if (route === '/app/agenda') {
+      return state.agenda.map(a => `<article class="card"><strong>${esc(a.title)}</strong>
+        <p>${esc(a.time)} · ${esc(a.status)}</p><small>${esc(a.channel)}</small></article>`).join('');
+    }
+    if (route === '/app/templates') {
+      return state.templates.map(t => `<article class="card"><strong>${esc(t.title)}</strong>
+        <p>${esc(t.content)}</p><small>${esc(t.category)}</small></article>`).join('');
+    }
+    if (route === '/app/metrics') {
+      const won = state.leads.filter(l => l.stage === 'won');
+      return `<article class="card"><strong>已成交金额</strong>
+        <p>${fmtCny(won.reduce((sum, l) => sum + l.valueCents, 0))}</p>
+        <small>已成交商机 ${won.length} 笔</small></article>`;
+    }
+    if (route === '/app/settings') {
+      return `<article class="card"><strong>演示偏好</strong>
+        <p>当前为${state.theme === 'dark' ? '深色' : '浅色'}模式</p>
+        <button class="btn" data-open-preferences>打开主题与重置选项</button></article>`;
+    }
     if (route === '/app/tasks') {
       return state.tasks
         .map(
@@ -516,13 +535,16 @@
             <strong>全部功能模块</strong>
             <button class="btn sm ghost" id="close-sheet">${svg('close', 16)}</button>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <button class="btn" data-m-nav="/app">首页概览</button>
-            <button class="btn" data-m-nav="/app/radar">风险雷达</button>
-            <button class="btn" data-m-nav="/app/tasks">跟进任务</button>
-            <button class="btn" data-m-nav="/app/contacts">联系人</button>
-            <button class="btn" data-m-nav="/app/ai/evals">本体论评测</button>
-            <button class="btn" data-m-nav="/app/ai/followups">跟进流程</button>
+          <a class="btn" href="module-tour.html">模块演示导览</a>
+          ${window.DEMO_NAV_GROUPS.map(group => `
+            <section class="module-group">
+              <h3>${esc(group.label)}</h3>
+              <div class="module-grid">${group.items.map(item => `
+                <button class="btn ${getRoute() === item.path ? 'primary' : ''}" data-m-nav="${esc(item.path)}">${esc(item.label)}</button>
+              `).join('')}</div>
+            </section>
+          `).join('')}
+          <div class="module-grid">
             <a class="btn" href="about.html">${svg('file', 14)}<span>项目介绍</span></a>
             <a class="btn" href="index.html#/app/inbox">${svg('monitor', 14)}<span>切换桌面版</span></a>
           </div>
@@ -539,20 +561,9 @@
     document.documentElement.setAttribute('data-theme', state.theme === 'dark' ? 'dark' : 'light');
     const route = getRoute();
     const unread = state.conversations.reduce((s, c) => s + (c.unread || 0), 0);
-    const pendingMem = state.contacts.reduce((s, c) => s + c.memories.filter((m) => m.status === 'candidate').length, 0);
-
-    const titles = {
-      '/app': '首页概览',
-      '/app/inbox': '会话收件箱',
-      '/app/ai/workbench': 'Agent 工作台',
-      '/app/ai/memory': '客户记忆',
-      '/app/ai/evals': '本体论评测',
-      '/app/ai/followups': '跟进流程',
-      '/app/kanban': '销售漏斗',
-      '/app/radar': '风险雷达',
-      '/app/tasks': '跟进任务',
-      '/app/contacts': '联系人',
-    };
+    const titles = Object.fromEntries(window.DEMO_NAV_GROUPS.flatMap(group =>
+      group.items.map(item => [item.path, item.label])
+    ));
 
     const isFlush = route === '/app/inbox' && mobileView === 'thread';
     let bodyHtml = '';
@@ -586,15 +597,11 @@
         <button class="m-tab ${route === '/app/ai/workbench' ? 'active' : ''}" data-m-nav="/app/ai/workbench">
           <span class="m-tab-icon">${svg('bot', 19)}</span><span>工作台</span>
         </button>
-        <button class="m-tab ${route === '/app/kanban' ? 'active' : ''}" data-m-nav="/app/kanban">
-          <span class="m-tab-icon">${svg('kanban', 19)}</span><span>漏斗</span>
-        </button>
-        <button class="m-tab ${route === '/app/ai/memory' ? 'active' : ''}" data-m-nav="/app/ai/memory">
-          <span class="m-tab-icon">${svg('brain', 19)}</span><span>记忆</span>
-          ${pendingMem > 0 ? `<span class="m-tab-badge">${pendingMem}</span>` : ''}
+        <button class="m-tab ${route === '/app/tasks' ? 'active' : ''}" data-m-nav="/app/tasks">
+          <span class="m-tab-icon">${svg('file', 19)}</span><span>跟进任务</span>
         </button>
         <button class="m-tab" id="m-more-btn">
-          <span class="m-tab-icon">${svg('menu', 19)}</span><span>更多</span>
+          <span class="m-tab-icon">${svg('menu', 19)}</span><span>全部模块</span>
         </button>
       </nav>
       ${renderSheet()}
@@ -607,6 +614,7 @@
     document.querySelectorAll('[data-m-nav]').forEach((el) => {
       el.onclick = () => navigate(el.dataset.mNav);
     });
+    document.querySelector('[data-open-preferences]')?.addEventListener('click', () => { sheetType = 'more'; render(); });
     document.getElementById('m-more-btn').onclick = () => { sheetType = 'more'; render(); };
     document.getElementById('close-sheet')?.addEventListener('click', () => { sheetType = null; render(); });
     document.getElementById('sheet-backdrop')?.addEventListener('click', (e) => {

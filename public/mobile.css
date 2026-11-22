@@ -116,7 +116,7 @@ button, input, textarea, select { font-family: inherit; font-size: inherit; colo
   background: var(--surface);
   border-top: 1px solid var(--border);
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   flex-shrink: 0;
 }
 .m-tab {
@@ -423,3 +423,8 @@ button, input, textarea, select { font-family: inherit; font-size: inherit; colo
   margin-top: 18px;
 }
 .welcome-actions .btn { justify-content: center; width: 100%; }
+
+.m-header { background: #112849; color: #fff; }
+.module-group h3 { margin: 0 0 6px; font-size: 13px; color: var(--text-muted); }
+.module-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.module-grid .btn { white-space: normal; min-height: 38px; }

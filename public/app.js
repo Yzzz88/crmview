@@ -277,6 +277,7 @@
               <strong style="font-size:14px;">${window.DemoViews.esc(getPageTitle(route))}</strong>
             </div>
             <div class="topbar-right">
+              <a class="btn sm" href="module-tour.html">模块导览</a>
               <a class="btn sm" href="about.html">${svg('file', 14)} <span>项目介绍</span></a>
               <a class="btn sm" href="mobile.html#${window.DemoViews.esc(route)}">${svg('smartphone', 14)} <span>手机端</span></a>
               <button class="btn sm" id="open-cmd">${svg('search', 14)} <span>搜索 ⌘K</span></button>
