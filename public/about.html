@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="yzzz 的全渠道零售 SaaS 演示 · 项目介绍，跟进门店试点、会员运营与续约。">
+  <title>项目介绍 · yzzz-crm</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2222%22%20height%3D%2222%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23001859%22%2F%3E%3Cpath%20d%3D%22M5%207h6l5%208%205-8h6l-8.5%2013v6h-5v-6z%22%20fill%3D%22white%22%2F%3E%3C%2Fsvg%3E">
+  <link rel="stylesheet" href="about.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="about.html">
+        <span class="brand-mark">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#001859"/><path d="M5 7h6l5 8 5-8h6l-8.5 13v6h-5v-6z" fill="white"/></svg>
+        </span>
+        yzzz-crm
+      </a>
+      <div class="nav-actions">
+        <a class="btn primary" href="index.html#/app/inbox">进入演示</a>
+        <a class="btn" href="mobile.html#/app/inbox">手机端</a>
+        <button class="btn ghost" id="toggle-theme" type="button">切换主题</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">yzzz-crm · 商家经营</div>
+      <h1>从第一家试点门店，到整条连锁的续约</h1>
+      <p class="lead">跟随客户经理 yzzz，查看服饰、烘焙与美妆商家的开店、会员运营和续约进度。</p>
+    </section>
+    <section><h2>从一条开店咨询开始</h2><p>禾岸服饰准备开通小程序商城。进入收件箱，核对预算、门店库存同步需求和客户允许回访的时段，再查看销售漏斗中对应的商机。</p></section>
+    <section><h2>决定下一次跟进</h2><p>在工作台查看停滞的续约商机，核对来源和待补材料，审核跟进建议。移动端可查看同一浏览器中保存的任务与客户记忆。</p></section>
+    <section><h2>演示范围</h2><p>商户、报价与会话均为虚构。Agent 输出使用预设案例，操作保存在当前浏览器。</p><a class="btn primary" href="index.html#/app/inbox">打开商家收件箱</a></section>
+    <footer>yzzz · yzzz-crm · 项目介绍与静态交互演示</footer>
+  </main>
+
+  <script>
+    (function () {
+      var KEY = "yzzz-crm_demo_state_v1:intro";
+      var STATE = "yzzz-crm_demo_state_v1";
+      try { localStorage.setItem(KEY, "1"); } catch (e) {}
+
+      function currentTheme() {
+        try {
+          var raw = localStorage.getItem(STATE);
+          if (raw) {
+            var theme = JSON.parse(raw).theme;
+            if (theme === "dark" || theme === "light") return theme;
+          }
+        } catch (e) {}
+        return "light";
+      }
+
+      function apply(theme) {
+        document.documentElement.setAttribute("data-theme", theme === "dark" ? "dark" : "light");
+      }
+
+      function persist(theme) {
+        try {
+          var raw = localStorage.getItem(STATE);
+          if (!raw) return;
+          var state = JSON.parse(raw);
+          if (!state || typeof state !== "object") return;
+          state.theme = theme;
+          localStorage.setItem(STATE, JSON.stringify(state));
+        } catch (e) {}
+      }
+
+      apply(currentTheme());
+      document.getElementById("toggle-theme").addEventListener("click", function () {
+        var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        apply(next);
+        persist(next);
+      });
+    })();
+  </script>
+</body>
+</html>
